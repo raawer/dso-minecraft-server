@@ -1,0 +1,16 @@
+services:
+  mc-server:
+    build:
+      context: .
+    ports:
+      - "8888:25565"
+    volumes:
+      - mc-data:/data
+    environment:
+      EULA: ${EULA}
+      JAVA_OPTS: ${JAVA_OPTS}
+    restart: on-failure
+
+
+volumes:
+  mc-data:
