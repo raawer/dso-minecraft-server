@@ -43,7 +43,6 @@ Configuration is passed via a `.env` file (see `example.env` for a template). Al
 |-------------------------|----------|---------|--------------|
 | `EULA`                  | Yes      | `false` | Must be set to `true` to accept [Mojang's EULA](https://aka.ms/MinecraftEULA). The server refuses to start otherwise. |
 | `JAVA_OPTS`              | No       | *(empty)* | Extra JVM flags (e.g. heap size, garbage collector tuning). Passed through unquoted, so multiple flags can be space-separated. |
-| `MINECRAFT_JAR_SHA256`   | No       | pinned in `Dockerfile` | SHA-256 checksum used to verify the downloaded server JAR at build time. Only relevant if you change `MINECRAFT_JAR_URL` to a different server version. |
 
 ### Networking
 
