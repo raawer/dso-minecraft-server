@@ -15,6 +15,10 @@ Key contents:
 - **`Dockerfile`** — builds the server image on top of a minimal `eclipse-temurin` JRE base. The server JAR is downloaded directly from Mojang and its integrity is verified via a pinned SHA-256 checksum. The container runs as a dedicated non-root user.
 - **`entrypoint.sh`** — enforces explicit EULA acceptance via an environment variable, then starts the Java process in a way that forwards shutdown signals correctly for a clean server stop.
 - **`docker-compose.yaml`** — defines the `mc-server` service, including port mapping, a named volume for persistent world data, environment-based configuration, and an automatic restart policy on failure.
+- **`example.env`** — template for the `.env` file that supplies the runtime configuration. The real `.env` is not part of this repository.
+- **`.dockerignore`** — restricts the Docker build context to the single file the build actually needs.
+- **`.gitignore`** — keeps environment files, editor settings and operating system artifacts out of version control.
+- **`Minecraft Server Checkliste.pdf`** — the requirements checklist this project was implemented against.
 
 ## Quickstart
 
@@ -30,7 +34,7 @@ Key contents:
    ```
    docker compose up -d --build
    ```
-4. The server is reachable on port `8888`. Verify it with [mcstatus](https://github.com/py-mine/mcstatus) (see its docs for installation) or by connecting with a Minecraft Java client:
+4. The server is reachable on the port set by `HOST_PORT`, which defaults to `8888`. Verify it with [mcstatus](https://github.com/py-mine/mcstatus) (see its docs for installation) or by connecting with a Minecraft Java client:
    ```
    mcstatus localhost:8888 status
    ```
@@ -45,17 +49,18 @@ Configuration is passed via a `.env` file (see `example.env` for a template). Al
 |-------------------------|----------|---------|--------------|
 | `EULA`                  | Yes      | `false` | Must be set to `true` to accept [Mojang's EULA](https://aka.ms/MinecraftEULA). The server refuses to start otherwise. |
 | `JAVA_OPTS`              | No       | *(empty)* | Extra JVM flags (e.g. heap size, garbage collector tuning). Passed through unquoted, so multiple flags can be space-separated. |
+| `HOST_PORT`              | No       | `8888`  | Port on the host the server is published on. Only the host side of the mapping — the port inside the container stays at Minecraft's default `25565`. |
 
 ### Networking
 
-The Minecraft server listens on port `25565` inside the container. `docker-compose.yaml` maps this to host port `8888`:
+The Minecraft server listens on port `25565` inside the container. `docker-compose.yaml` publishes this on the host:
 
 ```yaml
 ports:
-  - "8888:25565"
+  - "${HOST_PORT:-8888}:25565"
 ```
 
-To change the externally visible port, adjust the host side of this mapping (the part before the colon).
+To change the externally visible port, set `HOST_PORT` in your `.env` file; without it, the server is published on `8888`. The container-internal port is deliberately left at Minecraft's default, so `server.properties` needs no adjustment.
 
 ### Persistence
 

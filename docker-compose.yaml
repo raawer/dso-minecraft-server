@@ -3,7 +3,7 @@ services:
     build:
       context: .
     ports:
-      - "8888:25565"
+      - "${HOST_PORT:-8888}:25565"
     volumes:
       - mc-data:/data
     environment:
