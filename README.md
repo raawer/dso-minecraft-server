@@ -9,6 +9,8 @@
 
 This repository contains a fully containerized Minecraft Java Edition server, built from scratch with Docker instead of relying on a pre-built Minecraft image.
 
+Its purpose is to provide everything needed to deploy and operate a self-hosted Minecraft server reproducibly on any Docker host: the world data survives container recreation, all settings are supplied through environment variables rather than baked into the image, and the server recovers automatically from crashes.
+
 Key contents:
 - **`Dockerfile`** — builds the server image on top of a minimal `eclipse-temurin` JRE base. The server JAR is downloaded directly from Mojang and its integrity is verified via a pinned SHA-256 checksum. The container runs as a dedicated non-root user.
 - **`entrypoint.sh`** — enforces explicit EULA acceptance via an environment variable, then starts the Java process in a way that forwards shutdown signals correctly for a clean server stop.

@@ -19,6 +19,3 @@
 
 # VS Code
 .vscode/
-
-# Running Minecraft server in a container at runtime
-/data/
